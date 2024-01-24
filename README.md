@@ -12,6 +12,7 @@ For installation information, please visit [this link](https://github.com/hithma
 ```bash
 git clone https://github.com/hithmast/Bee.git
 cd Bee
+pip install -r requirements.txt
 chmod +x bee.py
 python3 bee.py
 ```
