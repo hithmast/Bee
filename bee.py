@@ -6,7 +6,7 @@ import readline
 
 class Bee:
     def __init__(self, api_key=None, verbosity=0):
-        self.data = None
+        self.data = {}
         self.keys = []
         self.verbosity = verbosity
         self.api = shodan.Shodan(api_key) if api_key else None
@@ -41,20 +41,26 @@ class Bee:
             else:
                 print(f'Unknown command: {command}')
 
-    def load_file(self, filename):
-        try:
-            with open(filename, 'r') as f:
-                objects = ijson.items(f, '')
-                self.data[filename] = list(objects)[0]
-            self.keys[filename] = list(self.data[filename].keys())
-            if self.verbosity > 0:
-                logging.info(f'Successfully loaded file: {filename}')
-        except ijson.JSONError as e:
-            logging.error(f'Invalid JSON file: {e}')
-        except FileNotFoundError:
-            logging.error(f'File not found: {filename}')
-        except PermissionError:
-            logging.error(f'Permission denied: {filename}')
+
+def load_file(self, filename):
+    try:
+        with open(filename, 'r') as f:
+            objects = ijson.items(f, '')
+            data_list = list(objects)
+            if data_list:
+                self.data[filename] = data_list[0]
+                self.keys[filename] = list(self.data[filename].keys())
+                if self.verbosity > 0:
+                    logging.info(f'Successfully loaded file: {filename}')
+            else:
+                logging.error(f'Empty data in file: {filename}')
+    except ijson.JSONError as e:
+        logging.error(f'Invalid JSON file: {e}')
+    except FileNotFoundError:
+        logging.error(f'File not found: {filename}')
+    except PermissionError:
+        logging.error(f'Permission denied: {filename}')
+
 
     def download_data(self, query):
         if self.api is not None:
