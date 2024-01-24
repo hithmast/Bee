@@ -76,10 +76,17 @@ class Bee:
         if self.data and self.verbosity > 1:
             for filename, data in self.data.items():
                 print(f'Data from {filename}:')
-                for key, value in data.items():
-                    print(f'{key}: {value}')
+                self.print_recursive(data, indent=2)
         elif not self.data and self.verbosity > 0:
             logging.info('No data loaded.')
+        
+    def print_recursive(self, data, indent=0):
+        for key, value in data.items():
+            if isinstance(value, dict):
+                print(" " * indent + f"{key}:")
+                self.print_recursive(value, indent + 2)
+            else:
+                print(" " * indent + f"{key}: {value}")
 
     def print_key(self, key):
         if self.data:
